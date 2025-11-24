@@ -1,7 +1,28 @@
 from tkinter import *
 
+operador =''
+
+def click_boton(numero):
+    global operador
+    operador = operador + numero
+    visor_calculadora.delete(0,END)
+    visor_calculadora.insert(END,operador)
+
+def borrar():
+    global operador
+    operador=''
+    visor_calculadora.delete(0,END)
+
+def obtener_resultado():
+    global operador
+    resultado = str(eval(operador))
+    visor_calculadora.delete(0, END)
+    visor_calculadora.insert(0, resultado)
+    operador = ''
+
+#iniciar tkinter
 aplicacion = Tk()
-aplicacion.geometry('1020x630+0+0')
+aplicacion.geometry('1090x630+0+0')
 aplicacion.resizable(0, 0)
 aplicacion.title('Mi restaurante - sistema pro max hd 4k 1 link mega')
 aplicacion.config(bg='dark goldenrod')
@@ -210,6 +231,60 @@ texto_recibo = Text(panel_recibo,
                     width=42,
                     height=10)
 texto_recibo.grid(row=0, column=0)
+
+
+#calculadora
+visor_calculadora = Entry(panel_calculadora,
+                          font=('Dosis', 16, 'bold'),
+                          width=32,
+                          bd=1)
+visor_calculadora.grid(row=0,column=0,columnspan=4,pady=10)
+
+botones_calculadora=['7','8','9','+',
+                     '4','5','6','-',
+                     '1','2','3','x',
+                     '=','B','0','/']
+
+botones_guardados=[]
+
+fila = 1
+columna = 0
+for boton in botones_calculadora:
+    boton = Button(panel_calculadora,
+                   text=boton.title(),
+                   font=('Dosis', 16, 'bold'),
+                   width=7,
+                   bd=1,
+                   fg='white',
+                   bg='azure4')
+    botones_guardados.append(boton)
+    boton.grid(row=fila, column=columna,pady=1)
+
+    if columna == 3:
+        fila += 1
+
+    columna += 1
+
+    if columna == 4:
+        columna=0
+
+botones_guardados[0].config(command=lambda: click_boton('7'))
+botones_guardados[1].config(command=lambda: click_boton('8'))
+botones_guardados[2].config(command=lambda: click_boton('9'))
+botones_guardados[3].config(command=lambda: click_boton('+'))
+botones_guardados[4].config(command=lambda: click_boton('4'))
+botones_guardados[5].config(command=lambda: click_boton('5'))
+botones_guardados[6].config(command=lambda: click_boton('6'))
+botones_guardados[7].config(command=lambda: click_boton('-'))
+botones_guardados[8].config(command=lambda: click_boton('1'))
+botones_guardados[9].config(command=lambda: click_boton('2'))
+botones_guardados[10].config(command=lambda: click_boton('3'))
+botones_guardados[11].config(command=lambda: click_boton('*'))
+botones_guardados[12].config(command=obtener_resultado)
+botones_guardados[13].config(command=borrar)
+botones_guardados[14].config(command=lambda: click_boton('0'))
+botones_guardados[15].config(command=lambda: click_boton('/'))
+
 
 # evitar que la pantalla se cierre
 aplicacion.mainloop()

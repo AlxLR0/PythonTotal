@@ -1,26 +1,250 @@
 from tkinter import *
+import random
+import datetime
+from tkinter import filedialog, messagebox
 
-operador =''
+# ------------------------------------------------------------------------------
+# VARIABLES GLOBALES Y CONFIGURACIÓN INICIAL
+# ------------------------------------------------------------------------------
+
+operador = ''   # Almacena la operación actual digitada en la calculadora
+
+# Listas de precios por categoría (índice corresponde al mismo índice de los productos)
+precios_comida = [1.32, 1.65, 2.31, 3.22, 1.22, 1.99, 2.05, 2.65]
+precios_bebida = [0.25, 0.99, 1.21, 1.54, 1.08, 1.10, 2.00, 1.58]
+precios_postres = [1.54, 1.68, 1.32, 1.97, 2.55, 2.14, 1.94, 1.74]
+
+# ------------------------------------------------------------------------------
+# FUNCIONES DEL SISTEMA (CALCULADORA, COSTOS, RECIBOS)
+# ------------------------------------------------------------------------------
 
 def click_boton(numero):
+    """
+    Agrega dígitos u operadores al visor de la calculadora.
+    """
     global operador
-    operador = operador + numero
-    visor_calculadora.delete(0,END)
-    visor_calculadora.insert(END,operador)
+    operador += numero
+    visor_calculadora.delete(0, END)
+    visor_calculadora.insert(END, operador)
 
 def borrar():
+    """
+    Limpia completamente la operación actual de la calculadora.
+    """
     global operador
-    operador=''
-    visor_calculadora.delete(0,END)
+    operador = ''
+    visor_calculadora.delete(0, END)
 
 def obtener_resultado():
+    """
+    Evalúa la operación matemática actual y muestra el resultado.
+    """
     global operador
-    resultado = str(eval(operador))
+    resultado = str(eval(operador))    # eval interpreta la operación matemática
     visor_calculadora.delete(0, END)
     visor_calculadora.insert(0, resultado)
     operador = ''
 
-#iniciar tkinter
+def revisar_check():
+    """
+    Activa o desactiva los campos de entrada según el Checkbutton seleccionado.
+    Si el usuario marca un producto, habilita la caja.
+    Si lo desmarca, la deshabilita y reinicia su valor a '0'.
+    """
+
+    # --- Comida ---
+    x = 0
+    for _ in cuadros_comida:
+        if variables_comida[x].get() == 1:
+            cuadros_comida[x].config(state=NORMAL)
+            if cuadros_comida[x].get() == '0':
+                cuadros_comida[x].delete(0, END)
+            cuadros_comida[x].focus()
+        else:
+            cuadros_comida[x].config(state=DISABLED)
+            texto_comida[x].set('0')
+        x += 1
+
+    # --- Bebidas ---
+    x = 0
+    for _ in cuadros_bebida:
+        if variables_bebidas[x].get() == 1:
+            cuadros_bebida[x].config(state=NORMAL)
+            if cuadros_bebida[x].get() == '0':
+                cuadros_bebida[x].delete(0, END)
+            cuadros_bebida[x].focus()
+        else:
+            cuadros_bebida[x].config(state=DISABLED)
+            texto_bebida[x].set('0')
+        x += 1
+
+    # --- Postres ---
+    x = 0
+    for _ in cuadros_postres:
+        if variables_postres[x].get() == 1:
+            cuadros_postres[x].config(state=NORMAL)
+            if cuadros_postres[x].get() == '0':
+                cuadros_postres[x].delete(0, END)
+            cuadros_postres[x].focus()
+        else:
+            cuadros_postres[x].config(state=DISABLED)
+            texto_postres[x].set('0')
+        x += 1
+
+def total():
+    """
+    Calcula costos:
+    - Subtotales por categoría
+    - Impuestos
+    - Total general
+
+    Luego actualiza los campos del panel de costos.
+    """
+
+    # Subtotal comida
+    sub_total_comida = 0
+    p = 0
+    for cantidad in texto_comida:
+        sub_total_comida += float(cantidad.get()) * precios_comida[p]
+        p += 1
+
+    # Subtotal bebidas
+    sub_total_bebida = 0
+    p = 0
+    for cantidad in texto_bebida:
+        sub_total_bebida += float(cantidad.get()) * precios_bebida[p]
+        p += 1
+
+    # Subtotal postres
+    sub_total_postres = 0
+    p = 0
+    for cantidad in texto_postres:
+        sub_total_postres += float(cantidad.get()) * precios_postres[p]
+        p += 1
+
+    # Totales
+    sub_total = sub_total_comida + sub_total_bebida + sub_total_postres
+    impuestos = sub_total * 0.16
+    total_general = sub_total + impuestos
+
+    # Actualiza campos visuales
+    var_costo_comida.set(f'$ {round(sub_total_comida, 2)}')
+    var_costo_bebida.set(f'$ {round(sub_total_bebida, 2)}')
+    var_costo_postre.set(f'$ {round(sub_total_postres, 2)}')
+
+    var_subtotal.set(f'$ {round(sub_total, 2)}')
+    var_impuesto.set(f'$ {round(impuestos, 2)}')
+    var_total.set(f'$ {round(total_general, 2)}')
+
+def recibo():
+    """
+    Genera el recibo completo incluyendo:
+    - Número de recibo aleatorio
+    - Fecha y hora
+    - Listado de productos adquiridos
+    - Totales finales
+    """
+    total()
+    texto_recibo.delete(1.0, END)
+
+    num_recibo = f'N# - {random.randint(1000, 9999)}'
+    fecha = datetime.datetime.now()
+    fecha_recibo = f'{fecha.day}/{fecha.month}/{fecha.year} - {fecha.hour}:{fecha.minute}'
+
+    # Encabezado
+    texto_recibo.insert(END, f'Datos:\t{num_recibo}\t\t{fecha_recibo}\n')
+    texto_recibo.insert(END, '*' * 63 + '\n')
+    texto_recibo.insert(END, 'Items\t\tCant.\tCosto Item\n')
+    texto_recibo.insert(END, '-' * 75 + '\n')
+
+    # Detalle comida
+    x = 0
+    for item in texto_comida:
+        if item.get() != '0':
+            texto_recibo.insert(END, f'{lista_comidas[x]}\t\t{item.get()}\t$ {int(item.get()) * precios_comida[x]}\n')
+        x += 1
+
+    # Detalle bebidas
+    x = 0
+    for item in texto_bebida:
+        if item.get() != '0':
+            texto_recibo.insert(END, f'{lista_bebidas[x]}\t\t{item.get()}\t$ {int(item.get()) * precios_bebida[x]}\n')
+        x += 1
+
+    # Detalle postres
+    x = 0
+    for item in texto_postres:
+        if item.get() != '0':
+            texto_recibo.insert(END, f'{lista_postres[x]}\t\t{item.get()}\t$ {int(item.get()) * precios_postres[x]}\n')
+        x += 1
+
+    # Totales finales
+    texto_recibo.insert(END, '-' * 75 + '\n')
+    texto_recibo.insert(END, f' Costo de la comida: \t\t\t{var_costo_comida.get()}\n')
+    texto_recibo.insert(END, f' Costo de la bebida: \t\t\t{var_costo_bebida.get()}\n')
+    texto_recibo.insert(END, f' Costo de postres: \t\t\t{var_costo_postre.get()}\n')
+    texto_recibo.insert(END, '-' * 75 + '\n')
+    texto_recibo.insert(END, f' Sub-Total: \t\t\t{var_subtotal.get()}\n')
+    texto_recibo.insert(END, f' Impuestos: \t\t\t{var_impuesto.get()}\n')
+    texto_recibo.insert(END, f' Total: \t\t\t{var_total.get()}\n')
+    texto_recibo.insert(END, '*' * 63 + '\n')
+    texto_recibo.insert(END, '\t\tVuelva pronto :)')
+
+def guardar():
+    """
+    Permite guardar el recibo en un archivo .txt mediante diálogo del sistema.
+    """
+    info_Recibo = texto_recibo.get(1.0, END)
+    archivo = filedialog.asksaveasfile(mode='w', defaultextension='.txt')
+
+    archivo.write(info_Recibo)
+    archivo.close()
+
+    messagebox.showinfo('Información', 'Recibo guardado :)')
+
+def resetear():
+    """
+    Reinicia todo el sistema:
+    - Borra recibo
+    - Reinicia valores de productos
+    - Deshabilita campos
+    - Limpia costos
+    """
+    texto_recibo.delete(0.1, END)
+
+    for texto in texto_comida:
+        texto.set('0')
+    for texto in texto_bebida:
+        texto.set('0')
+    for texto in texto_postres:
+        texto.set('0')
+
+    for cuadro in cuadros_comida:
+        cuadro.config(state=DISABLED)
+    for cuadro in cuadros_bebida:
+        cuadro.config(state=DISABLED)
+    for cuadro in cuadros_postres:
+        cuadro.config(state=DISABLED)
+
+    for v in variables_comida:
+        v.set(0)
+    for v in variables_bebidas:
+        v.set(0)
+    for v in variables_postres:
+        v.set(0)
+
+    var_costo_comida.set('')
+    var_costo_bebida.set('')
+    var_costo_postre.set('')
+    var_subtotal.set('')
+    var_impuesto.set('')
+    var_total.set('')
+
+# ------------------------------------------------------------------------------
+# INTERFAZ PRINCIPAL TKINTER
+# ------------------------------------------------------------------------------
+
+# iniciar tkinter
 aplicacion = Tk()
 aplicacion.geometry('1090x630+0+0')
 aplicacion.resizable(0, 0)
@@ -30,15 +254,18 @@ aplicacion.config(bg='dark goldenrod')
 # PANEL SUPERIOR
 panel_superior = Frame(aplicacion, bd=1, relief=FLAT, bg='burlywood')
 panel_superior.pack(side=TOP, fill="x")
+panel_superior.grid_columnconfigure(0, weight=1)  # Permite centrar el título
 
-panel_superior.grid_columnconfigure(0, weight=1)
-
-etiqueta_titulo = Label(panel_superior,
-                        text='Sistema de Facturacion',
-                        fg='azure4',
-                        font=('Dosis', 58),
-                        bg='burlywood')
+etiqueta_titulo = Label(
+    panel_superior,
+    text='Sistema de Facturacion',
+    fg='azure4',
+    font=('Dosis', 58),
+    bg='burlywood'
+)
 etiqueta_titulo.grid(row=0, column=0)
+
+# ------------------------------------------------------------------------------
 
 # PANEL IZQUIERDO
 panel_izquiero = Frame(aplicacion, bd=1, relief=FLAT)
@@ -47,16 +274,19 @@ panel_izquiero.pack(side=LEFT)
 panel_costos = Frame(panel_izquiero, bd=1, relief=FLAT, bg='azure4', padx=50)
 panel_costos.pack(side=BOTTOM)
 
-panel_comidas = LabelFrame(panel_izquiero, text='Comida', font=('Dosis', 19, 'bold'), bd=1, relief=FLAT, fg='azure4')
+panel_comidas = LabelFrame(panel_izquiero, text='Comida', font=('Dosis', 19, 'bold'),
+                           bd=1, relief=FLAT, fg='azure4')
 panel_comidas.pack(side=LEFT)
 
-panel_bebidas = LabelFrame(panel_izquiero, text='Bebidas', font=('Dosis', 19, 'bold'), bd=1, relief=FLAT, fg='azure4')
+panel_bebidas = LabelFrame(panel_izquiero, text='Bebidas', font=('Dosis', 19, 'bold'),
+                           bd=1, relief=FLAT, fg='azure4')
 panel_bebidas.pack(side=LEFT)
 
-panel_postres = LabelFrame(panel_izquiero, text='Postres', font=('Dosis', 19, 'bold'), bd=1, relief=FLAT, fg='azure4')
+panel_postres = LabelFrame(panel_izquiero, text='Postres', font=('Dosis', 19, 'bold'),
+                            bd=1, relief=FLAT, fg='azure4')
 panel_postres.pack(side=LEFT)
 
-# PANEL DERECHO (corregido)
+# PANEL DERECHO
 panel_derecha = Frame(aplicacion, bd=1, relief=FLAT)
 panel_derecha.pack(side=RIGHT)
 
@@ -72,202 +302,294 @@ panel_recibo.pack()
 panel_botones = Frame(panel_derecha, bd=1, relief=FLAT, bg='burlywood')
 panel_botones.pack()
 
-# lista de productos
+# ------------------------------------------------------------------------------
+# LISTAS DE PRODUCTOS
+# ------------------------------------------------------------------------------
+
 lista_comidas = ['pollo', 'cordero', 'salmon', 'pizza1', 'pizza2']
 lista_bebidas = ['agua', 'soda', 'jugo', 'vino', 'Cerveza']
 lista_postres = ['helado', 'chocoflan', 'brownies', 'flan', 'pay']
 
-# generar items comida
+# ------------------------------------------------------------------------------
+# GENERACIÓN DINÁMICA DE CHECKBUTTONS Y ENTRYS
+# ------------------------------------------------------------------------------
+
+# Generar comida
 variables_comida = []
 cuadros_comida = []
 texto_comida = []
 contador = 0
 for comida in lista_comidas:
+
     variables_comida.append('')
     variables_comida[contador] = IntVar()
-    comida = Checkbutton(panel_comidas, text=comida.title(), font=('Dosis', 19, 'bold'), onvalue=1, offvalue=0,
-                         variable=variables_comida[contador])
 
+    comida = Checkbutton(
+        panel_comidas,
+        text=comida.title(),
+        font=('Dosis', 19, 'bold'),
+        onvalue=1, offvalue=0,
+        variable=variables_comida[contador],
+        command=revisar_check
+    )
     comida.grid(row=contador, column=0, sticky=W)
 
-    # crear los cuadros de entrada
+    # cuadro entrada
     cuadros_comida.append('')
     texto_comida.append('')
     texto_comida[contador] = StringVar()
     texto_comida[contador].set('0')
 
-    cuadros_comida[contador] = Entry(panel_comidas, font=('Dosis', 18, 'bold'), bd=1, width=6, state=DISABLED,
-                                     textvariable=texto_comida[contador])
+    cuadros_comida[contador] = Entry(
+        panel_comidas,
+        font=('Dosis', 18, 'bold'),
+        bd=1,
+        width=6,
+        state=DISABLED,
+        textvariable=texto_comida[contador]
+    )
     cuadros_comida[contador].grid(row=contador, column=1)
 
     contador += 1
 
-# generar items bebida
+# Bebidas
 variables_bebidas = []
 cuadros_bebida = []
 texto_bebida = []
 contador = 0
 for bebidas in lista_bebidas:
+
     variables_bebidas.append('')
     variables_bebidas[contador] = IntVar()
-    bebida = Checkbutton(panel_bebidas, text=bebidas.title(), font=('Dosis', 19, 'bold'), onvalue=1, offvalue=0,
-                         variable=variables_bebidas[contador])
 
+    bebida = Checkbutton(
+        panel_bebidas,
+        text=bebidas.title(),
+        font=('Dosis', 19, 'bold'),
+        onvalue=1, offvalue=0,
+        variable=variables_bebidas[contador],
+        command=revisar_check
+    )
     bebida.grid(row=contador, column=0, sticky=W)
 
-    # crear los cuadros de entrada
     cuadros_bebida.append('')
     texto_bebida.append('')
     texto_bebida[contador] = StringVar()
     texto_bebida[contador].set('0')
 
-
-    # crear los cuadros de entrada
-    cuadros_bebida[contador] = Entry(panel_bebidas, font=('Dosis', 18, 'bold'), bd=1, width=6, state=DISABLED,
-                                     textvariable=texto_bebida[contador])
+    cuadros_bebida[contador] = Entry(
+        panel_bebidas,
+        font=('Dosis', 18, 'bold'),
+        bd=1,
+        width=6,
+        state=DISABLED,
+        textvariable=texto_bebida[contador]
+    )
     cuadros_bebida[contador].grid(row=contador, column=1)
 
     contador += 1
 
-# generar items postres
+# Postres
 variables_postres = []
 cuadros_postres = []
 texto_postres = []
 contador = 0
 
 for postres in lista_postres:
-    # crear checkbutton
+
     variables_postres.append('')
     variables_postres[contador] = IntVar()
-    postre = Checkbutton(panel_postres, text=postres.title(), font=('Dosis', 19, 'bold'), onvalue=1, offvalue=0,
-                         variable=variables_postres[contador])
 
+    postre = Checkbutton(
+        panel_postres,
+        text=postres.title(),
+        font=('Dosis', 19, 'bold'),
+        onvalue=1, offvalue=0,
+        variable=variables_postres[contador],
+        command=revisar_check
+    )
     postre.grid(row=contador, column=0, sticky=W)
 
-    # crear los cuadros de entrada
     cuadros_postres.append('')
     texto_postres.append('')
     texto_postres[contador] = StringVar()
     texto_postres[contador].set('0')
 
-    # crear los cuadros de entrada
-    cuadros_postres[contador] = Entry(panel_postres, font=('Dosis', 18, 'bold'), bd=1, width=6, state=DISABLED,
-                                      textvariable=texto_postres[contador])
+    cuadros_postres[contador] = Entry(
+        panel_postres,
+        font=('Dosis', 18, 'bold'),
+        bd=1,
+        width=6,
+        state=DISABLED,
+        textvariable=texto_postres[contador]
+    )
     cuadros_postres[contador].grid(row=contador, column=1)
 
     contador += 1
 
-#variables
-var_costo_comida= StringVar()
-var_costo_bebida= StringVar()
+# ------------------------------------------------------------------------------
+# VARIABLES PARA COSTOS Y TOTALES
+# ------------------------------------------------------------------------------
+
+var_costo_comida = StringVar()
+var_costo_bebida = StringVar()
 var_costo_postre = StringVar()
 var_subtotal = StringVar()
 var_impuesto = StringVar()
 var_total = StringVar()
 
-#etiquetas de costo y campos de entrada comida
-etiqueta_costo_comida= Label(panel_costos, text='Costo Comida', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# ------------------------------------------------------------------------------
+# Etiquetas y campos de costos
+# ------------------------------------------------------------------------------
+
+etiqueta_costo_comida = Label(panel_costos, text='Costo Comida',
+                              font=('Dosis', 12, 'bold'),
+                              bg='azure4', fg='white')
 etiqueta_costo_comida.grid(row=0, column=0)
 
-texto_costo_comida=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_costo_comida)
-texto_costo_comida.grid(row=0,column=1, padx=41)
+texto_costo_comida = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                           bd=1, width=10, state='readonly',
+                           textvariable=var_costo_comida)
+texto_costo_comida.grid(row=0, column=1, padx=41)
 
-#etiquetas de costo y campos de entrada bebida
-etiqueta_costo_bebida= Label(panel_costos, text='Costo Bebida', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# --- Bebida ---
+etiqueta_costo_bebida = Label(panel_costos, text='Costo Bebida',
+                              font=('Dosis', 12, 'bold'),
+                              bg='azure4', fg='white')
 etiqueta_costo_bebida.grid(row=1, column=0)
 
-texto_costo_bebida=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_costo_bebida)
-texto_costo_bebida.grid(row=1,column=1, padx=41)
+texto_costo_bebida = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                           bd=1, width=10, state='readonly',
+                           textvariable=var_costo_bebida)
+texto_costo_bebida.grid(row=1, column=1, padx=41)
 
-#etiquetas de costo y campos de entrada postres
-etiqueta_costo_postre= Label(panel_costos, text='Costo Postre', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# --- Postre ---
+etiqueta_costo_postre = Label(panel_costos, text='Costo Postre',
+                              font=('Dosis', 12, 'bold'),
+                              bg='azure4', fg='white')
 etiqueta_costo_postre.grid(row=2, column=0)
 
-texto_costo_postre=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_costo_postre)
-texto_costo_postre.grid(row=2,column=1, padx=41)
+texto_costo_postre = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                           bd=1, width=10, state='readonly',
+                           textvariable=var_costo_postre)
+texto_costo_postre.grid(row=2, column=1, padx=41)
 
-
-#etiquetas de costo y campos de entrada subtotal
-etiqueta_subtotal= Label(panel_costos, text='Subtotal', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# --- Subtotal ---
+etiqueta_subtotal = Label(panel_costos, text='Subtotal',
+                          font=('Dosis', 12, 'bold'),
+                          bg='azure4', fg='white')
 etiqueta_subtotal.grid(row=0, column=2)
 
-texto_subtotal=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_subtotal)
-texto_subtotal.grid(row=0,column=3, padx=41)
+texto_subtotal = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                       bd=1, width=10, state='readonly',
+                       textvariable=var_subtotal)
+texto_subtotal.grid(row=0, column=3, padx=41)
 
-#etiquetas de costo y campos de entrada impuestos
-etiqueta_impuestos= Label(panel_costos, text='Impuestos', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# --- Impuestos ---
+etiqueta_impuestos = Label(panel_costos, text='Impuestos',
+                           font=('Dosis', 12, 'bold'),
+                           bg='azure4', fg='white')
 etiqueta_impuestos.grid(row=1, column=2)
 
-texto_impuestos=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_impuesto)
-texto_impuestos.grid(row=1,column=3, padx=41)
+texto_impuestos = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                        bd=1, width=10, state='readonly',
+                        textvariable=var_impuesto)
+texto_impuestos.grid(row=1, column=3, padx=41)
 
-#etiquetas de costo y campos de entrada total
-etiqueta_total= Label(panel_costos, text='Total', font=('Dosis', 12, 'bold'), bg='azure4', fg='white')
+# --- Total ---
+etiqueta_total = Label(panel_costos, text='Total',
+                       font=('Dosis', 12, 'bold'),
+                       bg='azure4', fg='white')
 etiqueta_total.grid(row=2, column=2)
 
-texto_total=Entry(panel_costos, font=('Dosis', 12, 'bold'), bd=1, width=10, state= 'readonly', textvariable=var_total)
-texto_total.grid(row=2,column=3, padx=41)
+texto_total = Entry(panel_costos, font=('Dosis', 12, 'bold'),
+                    bd=1, width=10, state='readonly',
+                    textvariable=var_total)
+texto_total.grid(row=2, column=3, padx=41)
 
+# ------------------------------------------------------------------------------
+# BOTONES PRINCIPALES (TOTAL, RECIBO, GUARDAR, RESETEAR)
+# ------------------------------------------------------------------------------
 
-#botones
-botones=['Total','Recibo','Guardar','Resetear']
+botones = ['Total', 'Recibo', 'Guardar', 'Resetear']
+botones_Creados = []
 columnas = 0
+
 for boton in botones:
-    boton = Button(panel_botones,
-                   text=boton.title(),
-                   font=('Dosis', 11, 'bold'),
-                   fg='white',
-                   bg='azure4',
-                   bd=1,
-                   width=9)
+    boton_obj = Button(
+        panel_botones,
+        text=boton.title(),
+        font=('Dosis', 11, 'bold'),
+        fg='white',
+        bg='azure4',
+        bd=1,
+        width=9
+    )
+    botones_Creados.append(boton_obj)
+    boton_obj.grid(row=0, column=columnas)
+    columnas += 1
 
-    boton.grid(row=0, column=columnas)
-    columnas+=1
+botones_Creados[0].config(command=total)
+botones_Creados[1].config(command=recibo)
+botones_Creados[2].config(command=guardar)
+botones_Creados[3].config(command=resetear)
 
-#recibo
-texto_recibo = Text(panel_recibo,
-                    font=('Dosis', 12, 'bold'),
-                    bd=1,
-                    width=42,
-                    height=10)
+# ------------------------------------------------------------------------------
+# RECIBO (TEXT WIDGET)
+# ------------------------------------------------------------------------------
+
+texto_recibo = Text(
+    panel_recibo,
+    font=('Dosis', 12, 'bold'),
+    bd=1,
+    width=42,
+    height=10
+)
 texto_recibo.grid(row=0, column=0)
 
+# ------------------------------------------------------------------------------
+# CALCULADORA
+# ------------------------------------------------------------------------------
 
-#calculadora
-visor_calculadora = Entry(panel_calculadora,
-                          font=('Dosis', 16, 'bold'),
-                          width=32,
-                          bd=1)
-visor_calculadora.grid(row=0,column=0,columnspan=4,pady=10)
+visor_calculadora = Entry(
+    panel_calculadora,
+    font=('Dosis', 16, 'bold'),
+    width=32,
+    bd=1
+)
+visor_calculadora.grid(row=0, column=0, columnspan=4, pady=10)
 
-botones_calculadora=['7','8','9','+',
-                     '4','5','6','-',
-                     '1','2','3','x',
-                     '=','B','0','/']
+botones_calculadora = [
+    '7', '8', '9', '+',
+    '4', '5', '6', '-',
+    '1', '2', '3', 'x',
+    '=', 'B', '0', '/'
+]
 
-botones_guardados=[]
-
+botones_guardados = []
 fila = 1
 columna = 0
+
 for boton in botones_calculadora:
-    boton = Button(panel_calculadora,
-                   text=boton.title(),
-                   font=('Dosis', 16, 'bold'),
-                   width=7,
-                   bd=1,
-                   fg='white',
-                   bg='azure4')
-    botones_guardados.append(boton)
-    boton.grid(row=fila, column=columna,pady=1)
+    boton_obj = Button(
+        panel_calculadora,
+        text=boton.title(),
+        font=('Dosis', 16, 'bold'),
+        width=7,
+        bd=1,
+        fg='white',
+        bg='azure4'
+    )
+    botones_guardados.append(boton_obj)
+    boton_obj.grid(row=fila, column=columna, pady=1)
 
     if columna == 3:
         fila += 1
-
     columna += 1
-
     if columna == 4:
-        columna=0
+        columna = 0
 
+# Asignar eventos a cada botón
 botones_guardados[0].config(command=lambda: click_boton('7'))
 botones_guardados[1].config(command=lambda: click_boton('8'))
 botones_guardados[2].config(command=lambda: click_boton('9'))
@@ -285,6 +607,8 @@ botones_guardados[13].config(command=borrar)
 botones_guardados[14].config(command=lambda: click_boton('0'))
 botones_guardados[15].config(command=lambda: click_boton('/'))
 
+# ------------------------------------------------------------------------------
+# INICIO DEL LOOP PRINCIPAL
+# ------------------------------------------------------------------------------
 
-# evitar que la pantalla se cierre
 aplicacion.mainloop()

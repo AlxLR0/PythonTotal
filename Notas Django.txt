@@ -1,0 +1,11 @@
+comandos django
+
+python manage.py startapp base
+
+manage.py makemigrations     
+
+python manage.py makemigrations 
+
+python manage.py migrate
+
+python manage.py runserver 

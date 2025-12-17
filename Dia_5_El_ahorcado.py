@@ -43,7 +43,7 @@ def checar_3_cifras(lista):
     lista_nueva=[]
 
     for n in lista:
-        if n in range(100,1000): #checar si un numero esta dentro del rango de 100 a 999
+        if n in range(100,1000): #checar si un numero_string esta dentro del rango de 100 a 999
             lista_nueva.append(n)
            #return True si algún argumento es de 3 cifras regresa true
         else:
@@ -96,8 +96,8 @@ def mezclar(lista):
 def probar_suerte():
     intento=''
 
-    while intento not in ['1','2','3','4']: #se crea un loop donde si el numero del intento no esta del 1 al 4 sele pide que agregue uno valido
-        intento = input("Elige un numero del 1 al 4: ") #se hace con strings ya que sea lo que sea el interprete lo tomara como un string
+    while intento not in ['1','2','3','4']: #se crea un loop donde si el numero_string del intento no esta del 1 al 4 sele pide que agregue uno valido
+        intento = input("Elige un numero_string del 1 al 4: ") #se hace con strings ya que sea lo que sea el interprete lo tomara como un string
 
     return int(intento)#ya después de castea a int para manipular los datos como integers
 
@@ -271,12 +271,12 @@ def devolver_distintos(n1,n2,n3):
     numeros=[n1,n2,n3]
     total=n1+n2+n3
     if total>15:
-        return f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero maximo es {max(n1, n2, n3)}"
+        return f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero_string maximo es {max(n1, n2, n3)}"
     elif total<10:
-        return  f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero minimo es {min(n1,n2,n3)}"
+        return  f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero_string minimo es {min(n1,n2,n3)}"
     elif total>=10 and total<=15:
         numeros.sort()
-        return f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero intermedio es {numeros[1]}"
+        return f"los numeros son {n1}, {n2}, {n3}\nla suma es {total}\nel numero_string intermedio es {numeros[1]}"
 
 
 

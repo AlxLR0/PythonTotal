@@ -52,7 +52,7 @@ class Cliente(Persona):
     # Método especial: __str__
     # Permite que cuando hagamos print(cliente) se muestre información amigable del cliente.
     def __str__(self):
-        return f'El usuario {self.nombre} {self.apellido} con numero de cuenta {self.numero_cuenta} tiene un balance de {self.balance}'
+        return f'El usuario {self.nombre} {self.apellido} con numero_string de cuenta {self.numero_cuenta} tiene un balance de {self.balance}'
 
 
 # -----------------------------
@@ -66,7 +66,7 @@ class Cliente(Persona):
 def crear_cliente():
     nombre = input('Ingresa tu nombre: ')
     apellido = input('Ingresa tu apellido: ')
-    numero_cuenta = input('ingresa tu numero de cuenta: ')
+    numero_cuenta = input('ingresa tu numero_string de cuenta: ')
     # Convertimos a int porque queremos un número; si prefieres mantenerlo como string,
     # puedes eliminar la conversión. Aquí la dejamos por claridad.
     try:

@@ -10,7 +10,7 @@ try:
     suma()
 except ValueError: #tambien se puede poner typeerror y cualquier otro tipo de errores a los cuales se quiere preparar al programa
     # codigo a ejecutar si hay error este caso al poner el tipo de error (valueError) va a verificar que si ocurre ese error va a mostrar ese print
-    print('valiendo verija ese no es un numero')
+    print('valiendo verija ese no es un numero_string')
 except:
     #codigo a ejecutar si hay error este al estar solo va por defecto
     print('Algo no salio bien mi master chif')
@@ -27,7 +27,7 @@ def pedir_numero():
         try:
             n= int(input('gimi a number:'))
         except:
-            print('eso no es un numero')
+            print('eso no es un numero_string')
         else:
             print(f'el numereishon is {n}')
             break

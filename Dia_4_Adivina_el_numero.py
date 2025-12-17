@@ -137,14 +137,14 @@ diccionario_edades = {"Carlos":55, "María":42, "Mabel":78, "José":44, "Lucas":
 #random
 from random import *
 
-aleatorio = randint(1,50)#elige un numero aleatorio entre el 1 al 50
-aleatorio_decimal = uniform(1,5)#este tira aletatorios pero con decimal ejem: 1.00111 esto se puede redondear con round round(uniform(1,5),1) recordar que el ultimo numero (es este caso el 1) es la cantidad de decimales a mostrar
+aleatorio = randint(1,50)#elige un numero_string aleatorio entre el 1 al 50
+aleatorio_decimal = uniform(1,5)#este tira aletatorios pero con decimal ejem: 1.00111 esto se puede redondear con round round(uniform(1,5),1) recordar que el ultimo numero_string (es este caso el 1) es la cantidad de decimales a mostrar
 aleatorio_total= random() # este elige entre 0 y 1 con algun decimal (tambien se le puede aplicar un round)
 colores = ['rojo','verde','azul']
 aleatorio_seleccion=choice(colores)#Esta cosa es parecido a los otros pero aca puede elegir un elemento de alguna listra, tupla etc.
 pokar=list(range(5,50,5))
 shuffle(pokar) #este lo que hace es mezclar los elementos de una lista, tupla etc. a como le de la gana
-print(f"el numero aleatorio es: {aleatorio}")
+print(f"el numero_string aleatorio es: {aleatorio}")
 
 
 #conprencion de listas
@@ -155,9 +155,9 @@ listilla= [letra for letra in palabrona] #aqui lo que estamos haciendo es meter 
 
 #otro ejemplo con numeros en un rango de 0 a 20 saltando de 2 en 2
 listilla2=[n for n in range(0,21,2)]
-#tambien se pueden hacer cuentas aca se divide cada numero entre 2
+#tambien se pueden hacer cuentas aca se divide cada numero_string entre 2
 listilla2a=[n/2 for n in range(0,21,2)]
-#tambien se le pueden añadir condicionales en este caso se almacena si el numero multiplicado por 2 es mayor a 10
+#tambien se le pueden añadir condicionales en este caso se almacena si el numero_string multiplicado por 2 es mayor a 10
 listilla2b=[n for n in range(0,21,2) if n*2>10]
 #si se quiere añadir un else ahi ya cambia la cosa aca va al inicio el if/else y en este caso si no cumple la funcion se guardara la palabra nel
 listilla2b=[n if n*2>10 else 'nel' for n in range(0,21,2) ]
@@ -177,7 +177,7 @@ match serie:
     case _: #Esto es como un default
         print('no hay nada')
 
-#proyecto dia 4 adivina el numero
+#proyecto dia 4 adivina el numero_string
 
 #preguntar nombre del usuario
 
@@ -189,18 +189,18 @@ num_jugador=0
 numero_Aleatorio= randint(1,100)
 
 while intentos < 8:
-    num_jugador = int(input("Ingresa un numero: "))
+    num_jugador = int(input("Ingresa un numero_string: "))
     intentos+=1
     if num_jugador not in range(1,101):
         print("Numero fuera de rango (1-100)")
     elif num_jugador<numero_Aleatorio:
-        print(f"El numero secreto es las alto")
+        print(f"El numero_string secreto es las alto")
     elif num_jugador>numero_Aleatorio:
-        print(f"El numero secreto es las bajo")
+        print(f"El numero_string secreto es las bajo")
     else:
-        print(f"respuesta es correcta\ntu numero: {num_jugador}\nnumero secreto:{numero_Aleatorio}\nintentos totales: {intentos}")
+        print(f"respuesta es correcta\ntu numero_string: {num_jugador}\nnumero_string secreto:{numero_Aleatorio}\nintentos totales: {intentos}")
         break
 
 if num_jugador != numero_Aleatorio:
-    print(f"se agotaron los intentos. El numero era {numero_Aleatorio}")
+    print(f"se agotaron los intentos. El numero_string era {numero_Aleatorio}")
 

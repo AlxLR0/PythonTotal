@@ -11,11 +11,11 @@ print(res3)
 
 #substrings
 textonon= "ABCDEFGHI"
-# extraer desde la posicion numero dos hasta la numero 5 (sin incluir el final) dando como resultado CDE
+# extraer desde la posicion numero_string dos hasta la numero_string 5 (sin incluir el final) dando como resultado CDE
 fragmento=textonon[2:5]
 print(fragmento)
 
-# extraer desde la posicion numero dos hasta la numero 7 saltando de 2 en 2 dando como resultado CEG
+# extraer desde la posicion numero_string dos hasta la numero_string 7 saltando de 2 en 2 dando como resultado CEG
 fragmento2=textonon[2:7:2]
 print(fragmento2)
 
@@ -74,7 +74,7 @@ print(my_dic3.keys())#conocer las llaves que contiene un diccionario}
 #tuplas
 mi_tupla=(1,2,3,4,1)
 print(mi_tupla)
-print(mi_tupla.count(1))#cuantas veces hay el numero 1 en la tupla
+print(mi_tupla.count(1))#cuantas veces hay el numero_string 1 en la tupla
 print(mi_tupla.index(2))#consultar el index 2
 a,b,c,d,e=mi_tupla #almacenar cada valor de la tupla a diferentes variables ejem: a=1 b=2 c=3...
 converti_tupla= list(mi_tupla)#convertir tupla a lista

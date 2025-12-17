@@ -1,7 +1,7 @@
 import bs4
 import requests
 
-# crear url sin numero de pagina
+# crear url sin numero_string de pagina
 url_base = 'https://books.toscrape.com/catalogue/page-{}.html'
 
 # lista de titulos con 4 o 5 estrellas

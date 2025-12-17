@@ -20,9 +20,9 @@ c=numeros_cosmetica()
 #crear decoradores para construir el ticket
 def decorador(rubro):
     print('\n'+'*'*46)
-    print('Su numero es: ')
+    print('Su numero_string es: ')
     if rubro == 'P':
-        print(next(p))#aqui con la funcion next impimimos el siguiente numero que contenga p que al mismo tiempo almacena el generador  numeros_perfumeria()
+        print(next(p))#aqui con la funcion next impimimos el siguiente numero_string que contenga p que al mismo tiempo almacena el generador  numeros_perfumeria()
     elif rubro == 'F':
         print(next(f))#igual aqui
     else:

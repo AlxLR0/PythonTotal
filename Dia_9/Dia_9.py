@@ -8,7 +8,7 @@ import shutil
 
 
 numeros = [1,1,5,5,7,7,8,8,9,9,9,9,6,3,2,1,4,8]
-print(Counter(numeros)) #este modulo permite saber cuantas veces se repiten los numero en la lista numeros
+print(Counter(numeros)) #este modulo permite saber cuantas veces se repiten los numero_string en la lista numeros
 
 frase="al pan pan y al vino vino"
 print(Counter(frase.split()))#tambien para contar cuantas veces se repiten las palabras en una frase
@@ -54,7 +54,7 @@ print()
 resultado = math.floor(89.665) #hacer redondeo hacia abajo (89)
 resultado2 = math.ceil(89.665) # redondeo hacia arriba (90)
 pi=math.pi # esto da 3.1415... (pi)
-res = math.log(25,5) # a que numero se expone el 5 para dar 25
+res = math.log(25,5) # a que numero_string se expone el 5 para dar 25
 
 print()
 #modulo Re (resgular expression)
@@ -73,10 +73,10 @@ patronNums = r'\d\d\d-\d\d\d-\d\d\d\d' #tener listo un patron de 3 numeros 3 num
             #esto tambien funciona si se coloca r'\d{3}-\d{3}-\d{4}'
 resultadoNums= re.search(patronNums,numero)
 print(resultadoNums)
-print(resultadoNums.group())#tener como tal el resultado del numero 564-525-6588
+print(resultadoNums.group())#tener como tal el resultado del numero_string 564-525-6588
 
 clave = input("gimi la clave: ")
-patronon= r'\d{1}\w{7}' #este patron dice que la clave sera de un numero y 7 digitos
+patronon= r'\d{1}\w{7}' #este patron dice que la clave sera de un numero_string y 7 digitos
 chequear = re.search(patron,clave)
 print(chequear)
 

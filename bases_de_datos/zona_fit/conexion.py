@@ -8,11 +8,11 @@ En lugar de crear y destruir una conexión por cada consulta, la aplicación "to
 una conexión existente y la devuelve al finalizar, mejorando drásticamente el rendimiento y la eficiencia. 
 '''
 class Conexion:
-    host= '127.0.0.1'
-    port = 3307  # Puerto Docker
-    user= 'root'
-    password= 'admin'
-    database ='zona_fit_db'  # TablePlus
+    host= ''
+    port = 0  # Puerto Docker
+    user= ''
+    password= ''
+    database =''  # TablePlus
     pool_size = 5
     pool_name = 'zona_fit_pool'
     pool = None

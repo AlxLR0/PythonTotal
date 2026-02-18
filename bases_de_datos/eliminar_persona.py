@@ -3,11 +3,11 @@ import mysql.connector
 
 
 personas_bd = mysql.connector.connect(
-    host= '127.0.0.1',
-    port = 3307,  # Puerto Docker
-    user= 'root',
-    password= 'admin',
-    database ='personas_db'  # TablePlus
+    host= '',
+    port = 0,  # Puerto Docker
+    user= '',
+    password= '',
+    database =''  # TablePlus
 )
 
 #ejecutar la sentencia UPDATE

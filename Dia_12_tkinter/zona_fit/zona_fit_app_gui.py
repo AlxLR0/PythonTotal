@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 import sys
 import os
+from tkinter.messagebox import showerror, showinfo
+
+from cliente import Cliente
+from cliente_dao import ClienteDAO
+
 
 # Agregar la carpeta actual al path para que funcione la ejecución directa
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +22,7 @@ class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
+        self.id_cliente= None
         self.configurar_ventana()
         self.configurar_grid()
         self.mostrar_titulo()
@@ -109,6 +115,8 @@ class App(tk.Tk):
         self.tabla.configure(yscroll=scrollbar.set)
         scrollbar.grid(row=0, column=1, sticky=tk.NS)
 
+        #Asociar el evento select
+        self.tabla.bind('<<TreeviewSelect>>', self.cargar_cliente)
 
 
         # Publicamos la tabla
@@ -145,13 +153,93 @@ class App(tk.Tk):
 
 
     def validar_cliente(self):
-        pass
+        #validar campos
+        if self.nombre_t.get() and self.apellido_t.get() and self.membresia_t.get():
+            if self.validar_membresia():
+                self.guardar_cliente()
+            else:
+                showerror(title='Atención', message='El valor de membresía no es numérico')
+                self.membresia_t.delete(0, tk.END)
+                self.membresia_t.focus_set()
+        else:
+            showerror(title='Atención', message='Falta llenar uno o mas campos')
+            self.nombre_t.focus_set()
+
+
+    def validar_membresia(self):
+        try:
+            int(self.membresia_t.get())
+            return True
+        except:
+            return False
+
+    def guardar_cliente(self):
+        #recuperar los valores de las cajas de texto
+        nombre= self.nombre_t.get()
+        apellido= self.apellido_t.get()
+        membresia = self.membresia_t.get()
+
+        #validamos el valor del self.id_cliente
+        if self.id_cliente is None:
+            cliente = Cliente(nombre=nombre, apellido=apellido, membresia=membresia)
+            ClienteDAO.insertar(cliente)
+            showinfo(title='Agregar', message='Cliente agregado')
+        else:
+            #actualizar info
+            cliente = Cliente(self.id_cliente, nombre, apellido, membresia)
+            ClienteDAO.actualizar(cliente)
+            showinfo(title='actualizar', message='Datos actualizados')
+
+        #volver a mostrar los datos y limpiar el form
+        self.recargar_datos()
+
+    def cargar_cliente(self, event):
+        elemento_seleccionado = self.tabla.selection()[0]
+        elemento = self.tabla.item(elemento_seleccionado)
+        cliente_t= elemento['values'] #tupla de valores del cliente seleccionado
+        #recuperar cada valor del cliente
+        self.id_cliente = cliente_t[0]
+        nombre = cliente_t[1]
+        apellido = cliente_t[2]
+        membresia = cliente_t[3]
+
+        #antes de cargar, limpiar el form
+        self.limpiar_formulario()
+        #cargar los valores en el form
+        self.nombre_t.insert(0, nombre)
+        self.apellido_t.insert(0, apellido)
+        self.membresia_t.insert(0, membresia)
+
+
+
+
+    def recargar_datos(self):
+        #volver a cargar los datos de la tabla
+        self.mostrar_tabla()
+        #limpiar datos
+        self.limpiar_datos()
+
 
     def eliminar_cliente(self):
-        pass
+        if self.id_cliente is None:
+            showerror(title='atencion', message='se debe seleccionar un cliente a eliminar')
+        else:
+            cliente= Cliente(id=self.id_cliente)
+            ClienteDAO.eliminar(cliente)
+            showinfo(title='eliminar', message='cliente eliminado')
+            self.recargar_datos()
 
     def limpiar_datos(self):
-        pass
+        self.limpiar_formulario()
+        self.id_cliente= None
+
+
+    def limpiar_formulario(self):
+        self.nombre_t.delete(0, tk.END)
+        self.apellido_t.delete(0, tk.END)
+        self.membresia_t.delete(0, tk.END)
+
+
 
 
 if __name__ == '__main__':

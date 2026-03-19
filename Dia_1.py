@@ -2,6 +2,17 @@
 a= 'mundo'
 print('hola',a)
 
+#variable privada
+_private_name= 'alx'
+
+#constante
+PI= 3.1416
+print(PI)
+
+#short circuit
+name = 'alejandro'
+print(name and name.upper()) #esto sirve para imprimir el valor de la variable si es que existe o si no existe imprime el valor de la variable
+
 #string
 print('me encanta estudiar')
 print("hola \"mundo\"") #esto es para que tome en cuenta las comillas dobles dentro de las comillas dobles o tratarlas como caracter especial

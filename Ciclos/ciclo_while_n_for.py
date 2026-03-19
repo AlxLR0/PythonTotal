@@ -1,7 +1,5 @@
 import random
 
-from numpy.random import randint
-
 print('*'*5,'While','*'*5)
 contador=1
 while contador <= 5:
@@ -46,7 +44,7 @@ print('*'*5, 'Numero secreto', '*'*5)
 
 INTENTOS_MAXIMOS = 5
 intentos = 0
-numero_Secreto = randint(1, 50)
+numero_Secreto = random.randint(1, 50)
 numero = None
 
 while numero != numero_Secreto and intentos < INTENTOS_MAXIMOS:
